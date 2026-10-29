@@ -53,7 +53,7 @@ fun LockScreen(
 ) {
     val context = LocalContext.current
 
-    val triggerBiometric: () -> Unit = remember(context) {
+    val triggerBiometric: () -> Unit = remember(context, onUnlocked) {
         {
             val activity = context as FragmentActivity
             val executor = ContextCompat.getMainExecutor(context)
