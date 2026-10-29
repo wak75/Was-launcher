@@ -19,8 +19,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Modifier
@@ -36,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.washim.washim_launcher.ui.component.AnalogClock
 import com.washim.washim_launcher.ui.component.DockBar
+import com.washim.washim_launcher.ui.component.DockEditSheet
 import com.washim.washim_launcher.ui.component.StarField
 import com.washim.washim_launcher.ui.gesture.detectLauncherSwipe
 import com.washim.washim_launcher.ui.theme.OnSurface
@@ -70,10 +73,7 @@ fun HomeScreen(viewModel: LauncherViewModel) {
             ?.let { context.startActivity(it) }
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    fun showDockPicker(slot: Int) {
-        viewModel.navigate(LauncherScreen.HOME)
-    }
+    var editingSlot by remember { mutableStateOf<Int?>(null) }
 
     Box(
         modifier = Modifier
@@ -135,7 +135,7 @@ fun HomeScreen(viewModel: LauncherViewModel) {
         DockBar(
             apps = uiState.dockApps,
             onAppClick = { launchApp(it) },
-            onAppLongClick = { slot, _ -> showDockPicker(slot) },
+            onAppLongClick = { slot, _ -> editingSlot = slot },
             modifier = Modifier
                 .align(BottomCenter)
                 .padding(bottom = 36.dp)
@@ -149,6 +149,18 @@ fun HomeScreen(viewModel: LauncherViewModel) {
                 .padding(bottom = 8.dp)
                 .size(100.dp, 4.dp)
                 .background(Color.White.copy(alpha = 0.2f), RoundedCornerShape(2.dp)),
+        )
+    }
+
+    editingSlot?.let { slot ->
+        DockEditSheet(
+            slot = slot,
+            apps = uiState.apps,
+            onSelect = { packageName ->
+                viewModel.setDockApp(slot, packageName)
+                editingSlot = null
+            },
+            onDismiss = { editingSlot = null },
         )
     }
 }
