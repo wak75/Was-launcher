@@ -1,17 +1,32 @@
+# Android / Gradle build outputs
 *.iml
 .gradle
 /local.properties
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+app/build/
+app/release/
+
+# IDE — IntelliJ / Android Studio
 /.idea/caches
 /.idea/libraries
 /.idea/modules.xml
 /.idea/workspace.xml
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
+.idea/
+
+# macOS
 .DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
-local.properties
+
+# Keys & signing
+*.jks
+*.keystore
+keystore.properties
+
+# Superpowers / worktrees (internal tooling)
 .worktrees/
 .superpowers/
