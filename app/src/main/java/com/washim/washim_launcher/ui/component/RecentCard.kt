@@ -68,12 +68,17 @@ fun RecentCard(
                 .background(Surface)
                 .clickable { onTap() }
                 .pointerInput(Unit) {
-                    detectVerticalDragGestures { _, dragAmount ->
-                        if (dragAmount < -50.dp.toPx()) {
-                            visible = false
-                            onDismiss()
-                        }
-                    }
+                    var cumulativeDrag = 0f
+                    detectVerticalDragGestures(
+                        onDragStart = { cumulativeDrag = 0f },
+                        onVerticalDrag = { _, dragAmount ->
+                            cumulativeDrag += dragAmount
+                            if (cumulativeDrag < -50.dp.toPx()) {
+                                visible = false
+                                onDismiss()
+                            }
+                        },
+                    )
                 },
         ) {
             // Thumbnail / fallback area (fills card below the header)
