@@ -1,7 +1,6 @@
 package com.washim.washim_launcher.ui.screen
 
 import android.content.Context
-import androidx.compose.ui.test.assertExists
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
@@ -13,7 +12,7 @@ import com.washim.washim_launcher.data.model.AppInfo
 import com.washim.washim_launcher.ui.theme.LauncherTheme
 import com.washim.washim_launcher.viewmodel.LauncherViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,7 +35,7 @@ class HomeScreenTest {
 
 private fun fakeViewModel(context: Context): LauncherViewModel {
     val repo = object : AppRepository(context, context.packageManager) {
-        override fun getInstalledApps(): Flow<List<AppInfo>> = flowOf(emptyList())
+        override fun getInstalledApps(): Flow<List<AppInfo>> = MutableStateFlow(emptyList())
         override fun getWallpaper() = null
     }
     val dock = DockPreferencesDataStore(context)

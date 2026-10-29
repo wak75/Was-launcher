@@ -91,6 +91,6 @@ open class AppRepository @Inject constructor(
         }
     }
 
-    fun getWallpaper(): ImageBitmap? =
+    open fun getWallpaper(): ImageBitmap? =
         WallpaperManager.getInstance(context).drawable?.toBitmap()?.asImageBitmap()
 }

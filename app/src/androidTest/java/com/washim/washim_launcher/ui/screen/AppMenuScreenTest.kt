@@ -1,13 +1,11 @@
 package com.washim.washim_launcher.ui.screen
 
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.test.assertDoesNotExist
-import androidx.compose.ui.test.assertExists
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performTextInput
-import androidx.test.ext.junit4.runners.AndroidJUnit4
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.washim.washim_launcher.data.AppRepository
 import com.washim.washim_launcher.data.DockPreferencesDataStore
