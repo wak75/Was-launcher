@@ -49,6 +49,7 @@ fun AppMenuScreen(viewModel: LauncherViewModel) {
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xF7040408))
+            .testTag("app_menu_root")
             .pointerInput(Unit) {
                 detectLauncherSwipe(
                     onLeft = {},

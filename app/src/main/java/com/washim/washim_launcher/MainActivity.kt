@@ -9,16 +9,17 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.core.content.ContextCompat
 import dagger.hilt.android.AndroidEntryPoint
+import com.washim.washim_launcher.ui.LauncherNavHost
+import com.washim.washim_launcher.viewmodel.LauncherViewModel
 import com.washim.washim_launcher.viewmodel.LockViewModel
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val lockViewModel: LockViewModel by viewModels()
+    private val launcherViewModel: LauncherViewModel by viewModels()
 
     private val screenOffReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -32,7 +33,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            LauncherNavHost()
+            LauncherNavHost(lockViewModel, launcherViewModel)
         }
     }
 
@@ -52,7 +53,3 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun LauncherNavHost() {
-    Text("scaffold")
-}
