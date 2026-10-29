@@ -9,6 +9,7 @@ import com.washim.washim_launcher.data.DockPreferencesDataStore
 import com.washim.washim_launcher.data.model.AppInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -48,7 +49,8 @@ class FakeAppRepository(context: Context) : AppRepository(
     context,
     context.packageManager,
 ) {
-    override fun getInstalledApps(): Flow<List<AppInfo>> = flowOf(TEST_APPS)
+    private val _apps = MutableStateFlow(TEST_APPS)
+    override fun getInstalledApps(): Flow<List<AppInfo>> = _apps
 }
 
 // DockPreferencesDataStore is final; use it directly with a Robolectric context.
