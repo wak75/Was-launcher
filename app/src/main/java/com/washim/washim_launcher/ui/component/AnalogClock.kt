@@ -30,8 +30,8 @@ fun AnalogClock(
 
     LaunchedEffect(Unit) {
         while (true) {
-            withFrameMillis { frameTimeMs ->
-                time = frameTimeMs
+            withFrameMillis {
+                time = System.currentTimeMillis()
             }
         }
     }
