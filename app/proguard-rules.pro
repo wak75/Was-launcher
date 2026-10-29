@@ -19,3 +19,13 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Keep Washim Launcher classes
+-keep class com.washim.washim_launcher.** { *; }
+
+# Keep Hilt-related classes
+-keepclassmembers class * { @dagger.hilt.* <methods>; }
+-keep class dagger.hilt.** { *; }
+
+# Suppress Kotlin warnings
+-dontwarn kotlin.**
