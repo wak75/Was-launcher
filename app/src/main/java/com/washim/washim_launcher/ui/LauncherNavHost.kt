@@ -33,11 +33,16 @@ fun LauncherNavHost(
     val isLocked by lockViewModel.isLocked.collectAsStateWithLifecycle()
     val uiState by launcherViewModel.uiState.collectAsStateWithLifecycle()
 
-    // When the device is unlocked, navigate from LOCK → HOME
+    // When the device is unlocked, navigate from LOCK → HOME; when re-locked, navigate HOME → LOCK
     LaunchedEffect(isLocked) {
         if (!isLocked && navController.currentDestination?.route == LauncherScreen.LOCK.name) {
             navController.navigate(LauncherScreen.HOME.name) {
                 popUpTo(LauncherScreen.LOCK.name) { inclusive = true }
+            }
+        } else if (isLocked && navController.currentDestination?.route != LauncherScreen.LOCK.name) {
+            launcherViewModel.navigate(LauncherScreen.HOME)
+            navController.navigate(LauncherScreen.LOCK.name) {
+                popUpTo(LauncherScreen.HOME.name) { inclusive = true }
             }
         }
     }
