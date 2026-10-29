@@ -19,9 +19,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.BottomCenter
-import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,18 +42,27 @@ import com.washim.washim_launcher.ui.theme.OnSurface
 import com.washim.washim_launcher.viewmodel.LauncherScreen
 import com.washim.washim_launcher.viewmodel.LauncherViewModel
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import kotlinx.coroutines.delay
 
 @Composable
 fun HomeScreen(viewModel: LauncherViewModel) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    val dateString = remember {
-        SimpleDateFormat("EEEE, MMM d", Locale.getDefault())
-            .format(Date())
-            .uppercase()
+    fun formatDate() = SimpleDateFormat("EEEE, MMM d", Locale.getDefault()).format(Date()).uppercase()
+    val dateString by produceState(initialValue = formatDate()) {
+        while (true) {
+            val now = Calendar.getInstance()
+            val msUntilMidnight = (24 * 60 * 60 * 1000L
+                - now.get(Calendar.HOUR_OF_DAY) * 3600000L
+                - now.get(Calendar.MINUTE) * 60000L
+                - now.get(Calendar.SECOND) * 1000L)
+            delay(msUntilMidnight)
+            value = formatDate()
+        }
     }
 
     fun launchApp(app: com.washim.washim_launcher.data.model.AppInfo) {
