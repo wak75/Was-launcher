@@ -42,14 +42,20 @@ fun LauncherNavHost(
         }
     }
 
-    // When the ViewModel screen state changes (swipe gestures set it), navigate accordingly
+    // Only handle APP_MENU and RECENTS — HOME/LOCK transitions are handled by LockViewModel observer
+    // and the onUnlocked callback. Navigating to HOME here would bypass the lock screen on cold start.
     LaunchedEffect(uiState.screen) {
-        val target = uiState.screen.name
-        if (navController.currentDestination?.route != target) {
-            navController.navigate(target) {
-                popUpTo(LauncherScreen.HOME.name) { inclusive = false }
-                launchSingleTop = true
+        when (uiState.screen) {
+            LauncherScreen.APP_MENU, LauncherScreen.RECENTS -> {
+                val target = uiState.screen.name
+                if (navController.currentDestination?.route != target) {
+                    navController.navigate(target) {
+                        popUpTo(LauncherScreen.HOME.name) { inclusive = false }
+                        launchSingleTop = true
+                    }
+                }
             }
+            else -> {} // HOME and LOCK handled by isLocked observer and onUnlocked callback
         }
     }
 
@@ -101,7 +107,7 @@ fun LauncherNavHost(
                                 dampingRatio = Spring.DampingRatioNoBouncy,
                                 stiffness = Spring.StiffnessMediumLow,
                             ),
-                        ) { -it }
+                        ) { it }
                     else -> null
                 }
             },
