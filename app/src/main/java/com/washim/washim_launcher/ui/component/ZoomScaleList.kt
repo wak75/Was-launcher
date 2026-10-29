@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.withFrameMillis
@@ -22,11 +23,18 @@ fun ZoomScaleList(
 ) {
     val listState = rememberLazyListState()
     val scales = remember { mutableStateListOf<Float>().apply { repeat(items.size) { add(1f) } } }
+    val alphas = remember { mutableStateListOf<Float>().apply { repeat(items.size) { add(1f) } } }
 
-    // Resize scales list if items size changes
-    if (scales.size != items.size) {
-        scales.clear()
-        repeat(items.size) { scales.add(1f) }
+    // Resize scales/alphas lists if items size changes — done in SideEffect to avoid mutating
+    // SnapshotStateList during composition (which causes a recomposition loop).
+    SideEffect {
+        if (scales.size != items.size) {
+            val newSize = items.size
+            scales.clear()
+            repeat(newSize) { scales.add(1f) }
+            alphas.clear()
+            repeat(newSize) { alphas.add(1f) }
+        }
     }
 
     LaunchedEffect(Unit) {
@@ -45,6 +53,7 @@ fun ZoomScaleList(
                         val distNorm = (abs(itemCenterY - viewportCenterY) / (viewportHeight / 2f))
                             .coerceIn(0f, 1f)
                         scales[index] = 1f - distNorm * 0.18f
+                        alphas[index] = 1f - distNorm * 0.65f
                     }
                 }
             }
@@ -57,22 +66,7 @@ fun ZoomScaleList(
     ) {
         itemsIndexed(items) { index, app ->
             val scale = if (index < scales.size) scales[index] else 1f
-            val layoutInfo = listState.layoutInfo
-            val viewportHeight = layoutInfo.viewportSize.height
-            val alpha = if (viewportHeight == 0) {
-                1f
-            } else {
-                val viewportCenterY = layoutInfo.viewportStartOffset + viewportHeight / 2f
-                val visibleItem = layoutInfo.visibleItemsInfo.find { it.index == index }
-                if (visibleItem != null) {
-                    val itemCenterY = visibleItem.offset + visibleItem.size / 2f
-                    val distNorm = (abs(itemCenterY - viewportCenterY) / (viewportHeight / 2f))
-                        .coerceIn(0f, 1f)
-                    1f - distNorm * 0.65f
-                } else {
-                    1f
-                }
-            }
+            val alpha = if (index < alphas.size) alphas[index] else 1f
             AppListItem(
                 app = app,
                 scale = scale,
