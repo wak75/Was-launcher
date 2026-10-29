@@ -4,6 +4,7 @@ import android.app.AppOpsManager
 import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.Intent
+import android.provider.Settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
@@ -14,13 +15,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
@@ -41,6 +45,26 @@ import kotlinx.coroutines.flow.first
 @Composable
 fun RecentsScreen(viewModel: LauncherViewModel) {
     val context = LocalContext.current
+
+    var showUsageDialog by remember { mutableStateOf(!hasUsageStatsPermission(context)) }
+    if (showUsageDialog) {
+        AlertDialog(
+            onDismissRequest = { showUsageDialog = false },
+            title = { Text("Usage Access Required") },
+            text = { Text("To show recent apps, grant Usage Access in Settings → Apps → Special app access → Usage access.") },
+            confirmButton = {
+                TextButton(onClick = {
+                    showUsageDialog = false
+                    context.startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    })
+                }) { Text("Open Settings") }
+            },
+            dismissButton = {
+                TextButton(onClick = { showUsageDialog = false }) { Text("Not now") }
+            },
+        )
+    }
 
     // Load recent apps list once when entering the screen.
     val recentApps by produceState<List<AppInfo>>(initialValue = emptyList()) {

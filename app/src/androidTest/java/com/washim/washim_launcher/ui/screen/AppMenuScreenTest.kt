@@ -35,7 +35,9 @@ class AppMenuScreenTest {
             override fun getWallpaper() = null
         }
         val vm = LauncherViewModel(repo, DockPreferencesDataStore(context))
+        composeTestRule.mainClock.autoAdvance = false
         composeTestRule.setContent { LauncherTheme { AppMenuScreen(vm) } }
+        composeTestRule.mainClock.advanceTimeBy(500)
         composeTestRule.onNodeWithTag("search_input").performTextInput("spot")
         composeTestRule.onNodeWithText("Spotify").assertExists()
         composeTestRule.onNodeWithText("Settings").assertDoesNotExist()

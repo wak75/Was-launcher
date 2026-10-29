@@ -22,7 +22,9 @@ class LockScreenTest {
     fun lockScreen_showsClockAndUnlockHint() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val vm = LockViewModel(BiometricManager.from(context))
+        composeTestRule.mainClock.autoAdvance = false
         composeTestRule.setContent { LauncherTheme { LockScreen(vm, {}) } }
+        composeTestRule.mainClock.advanceTimeBy(500)
         composeTestRule.onNodeWithContentDescription("Analog clock").assertExists()
         composeTestRule.onNodeWithText("swipe up to unlock", ignoreCase = true).assertExists()
     }

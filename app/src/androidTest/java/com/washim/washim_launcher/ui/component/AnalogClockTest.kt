@@ -16,7 +16,9 @@ class AnalogClockTest {
 
     @Test
     fun analogClock_renders_withoutCrash() {
+        composeTestRule.mainClock.autoAdvance = false
         composeTestRule.setContent { LauncherTheme { AnalogClock() } }
+        composeTestRule.mainClock.advanceTimeBy(500)
         composeTestRule.onRoot().assertExists()
     }
 }

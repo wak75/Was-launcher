@@ -19,7 +19,9 @@ class ZoomScaleListTest {
     @Test
     fun zoomScaleList_showsAllItems() {
         val apps = listOf(fakeAppInfo("com.a", "Alpha"), fakeAppInfo("com.b", "Beta"))
+        composeTestRule.mainClock.autoAdvance = false
         composeTestRule.setContent { LauncherTheme { ZoomScaleList(apps, onAppClick = {}) } }
+        composeTestRule.mainClock.advanceTimeBy(500)
         composeTestRule.onNodeWithText("Alpha").assertExists()
         composeTestRule.onNodeWithText("Beta").assertExists()
     }

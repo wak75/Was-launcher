@@ -27,7 +27,9 @@ class HomeScreenTest {
     fun homeScreen_showsClockAndDock() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val vm = fakeViewModel(context)
+        composeTestRule.mainClock.autoAdvance = false
         composeTestRule.setContent { LauncherTheme { HomeScreen(vm) } }
+        composeTestRule.mainClock.advanceTimeBy(500)
         composeTestRule.onNodeWithContentDescription("Analog clock").assertExists()
         composeTestRule.onNodeWithTag("dock_bar").assertExists()
     }

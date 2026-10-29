@@ -3,6 +3,7 @@ package com.washim.washim_launcher.ui.screen
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeUp
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -36,7 +37,11 @@ class RecentsScreenTest {
         }
         val fakeVm = LauncherViewModel(repo, DockPreferencesDataStore(context))
 
+        composeTestRule.mainClock.autoAdvance = false
         composeTestRule.setContent { LauncherTheme { RecentsScreen(fakeVm) } }
+        composeTestRule.mainClock.advanceTimeBy(500)
+        // Dismiss usage-stats dialog if shown (no permission on test device)
+        composeTestRule.onNodeWithText("Not now").performClick()
         composeTestRule.onNodeWithText("Spotify").assertExists()
         composeTestRule.onNodeWithText("Spotify")
             .performTouchInput { swipeUp() }
