@@ -40,8 +40,11 @@ class RecentsScreenTest {
         composeTestRule.mainClock.autoAdvance = false
         composeTestRule.setContent { LauncherTheme { RecentsScreen(fakeVm) } }
         composeTestRule.mainClock.advanceTimeBy(500)
-        // Dismiss usage-stats dialog if shown (no permission on test device)
-        composeTestRule.onNodeWithText("Not now").performClick()
+        // Dismiss usage-stats dialog only if it appears (permission may be granted on some devices)
+        if (composeTestRule.onAllNodes(androidx.compose.ui.test.hasText("Not now"))
+                .fetchSemanticsNodes().isNotEmpty()) {
+            composeTestRule.onNodeWithText("Not now").performClick()
+        }
         composeTestRule.onNodeWithText("Spotify").assertExists()
         composeTestRule.onNodeWithText("Spotify")
             .performTouchInput { swipeUp() }
