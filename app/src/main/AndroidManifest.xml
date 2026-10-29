@@ -8,6 +8,7 @@
         tools:ignore="QueryAllPackagesPermission"/>
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions"/>
+    <uses-permission android:name="${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"/>
 
     <application
         android:name=".WashimLauncherApp"
