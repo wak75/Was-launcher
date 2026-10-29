@@ -4,7 +4,6 @@ import android.app.AppOpsManager
 import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
@@ -30,7 +29,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.washim.washim_launcher.data.model.AppInfo
 import com.washim.washim_launcher.ui.component.RecentCard
 import com.washim.washim_launcher.ui.gesture.detectLauncherSwipe
@@ -42,7 +40,6 @@ import kotlinx.coroutines.flow.first
 
 @Composable
 fun RecentsScreen(viewModel: LauncherViewModel) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
     // Load recent apps list once when entering the screen.
