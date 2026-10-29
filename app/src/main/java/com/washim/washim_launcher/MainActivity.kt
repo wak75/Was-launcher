@@ -14,6 +14,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import dagger.hilt.android.AndroidEntryPoint
 import com.washim.washim_launcher.ui.LauncherNavHost
+import com.washim.washim_launcher.ui.theme.LauncherTheme
 import com.washim.washim_launcher.viewmodel.LauncherViewModel
 import com.washim.washim_launcher.viewmodel.LockViewModel
 
@@ -30,6 +31,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+    private var receiverRegistered = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +43,9 @@ class MainActivity : ComponentActivity() {
             systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
         setContent {
-            LauncherNavHost(lockViewModel, launcherViewModel)
+            LauncherTheme {
+                LauncherNavHost(lockViewModel, launcherViewModel)
+            }
         }
     }
 
@@ -53,11 +57,15 @@ class MainActivity : ComponentActivity() {
             IntentFilter(Intent.ACTION_SCREEN_OFF),
             ContextCompat.RECEIVER_NOT_EXPORTED,
         )
+        receiverRegistered = true
     }
 
     override fun onPause() {
         super.onPause()
-        unregisterReceiver(screenOffReceiver)
+        if (receiverRegistered) {
+            unregisterReceiver(screenOffReceiver)
+            receiverRegistered = false
+        }
     }
 }
 

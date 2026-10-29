@@ -55,7 +55,14 @@ fun LauncherNavHost(
                     }
                 }
             }
-            else -> {} // HOME and LOCK handled by isLocked observer and onUnlocked callback
+            LauncherScreen.HOME -> {
+                // Swipe-to-home gesture: pop APP_MENU or RECENTS back to HOME
+                val current = navController.currentDestination?.route
+                if (current == LauncherScreen.APP_MENU.name || current == LauncherScreen.RECENTS.name) {
+                    navController.popBackStack(LauncherScreen.HOME.name, inclusive = false)
+                }
+            }
+            else -> {} // LOCK handled by isLocked observer and onUnlocked callback
         }
     }
 

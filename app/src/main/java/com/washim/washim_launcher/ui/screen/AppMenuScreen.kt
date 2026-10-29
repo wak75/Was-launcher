@@ -98,7 +98,7 @@ fun AppMenuScreen(viewModel: LauncherViewModel) {
                         IconButton(onClick = { viewModel.setSearchQuery("") }) {
                             Icon(
                                 imageVector = Icons.Default.Clear,
-                                contentDescription = null,
+                                contentDescription = "Clear search",
                                 tint = OnSurfaceMuted,
                             )
                         }

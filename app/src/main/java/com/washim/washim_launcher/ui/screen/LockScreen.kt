@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -43,8 +44,10 @@ import com.washim.washim_launcher.ui.theme.OnSurface
 import com.washim.washim_launcher.ui.theme.OnSurfaceMuted
 import com.washim.washim_launcher.viewmodel.LockViewModel
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import kotlinx.coroutines.delay
 
 @Composable
 fun LockScreen(
@@ -89,16 +92,26 @@ fun LockScreen(
             )
             val promptInfo = BiometricPrompt.PromptInfo.Builder()
                 .setTitle("Unlock Washim Launcher")
-                .setNegativeButtonText("Cancel")
+                .setAllowedAuthenticators(
+                    BiometricManager.Authenticators.BIOMETRIC_STRONG or
+                        BiometricManager.Authenticators.DEVICE_CREDENTIAL,
+                )
                 .build()
             prompt.authenticate(promptInfo)
         }
     }
 
-    val dateString = remember {
-        SimpleDateFormat("EEEE, MMM d", Locale.getDefault())
-            .format(Date())
-            .uppercase()
+    fun formatDate() = SimpleDateFormat("EEEE, MMM d", Locale.getDefault()).format(Date()).uppercase()
+    val dateString by produceState(initialValue = formatDate()) {
+        while (true) {
+            val now = Calendar.getInstance()
+            val msUntilMidnight = (24 * 60 * 60 * 1000L
+                - now.get(Calendar.HOUR_OF_DAY) * 3600000L
+                - now.get(Calendar.MINUTE) * 60000L
+                - now.get(Calendar.SECOND) * 1000L)
+            delay(msUntilMidnight)
+            value = formatDate()
+        }
     }
 
     Box(
